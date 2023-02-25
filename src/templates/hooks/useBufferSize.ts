@@ -11,7 +11,7 @@ const useBufferSize = () => {
     useEffect(() => {
         const handleResize = () => {
             gl.getSize(size);
-            setBufferSize({ width: size.x, height: size.y });
+            setBufferSize({ width: size.x || 1, height: size.y || 1 });
         };
 
         handleResize();

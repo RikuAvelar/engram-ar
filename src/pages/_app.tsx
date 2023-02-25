@@ -6,11 +6,11 @@ import '@/styles/index.css'
 
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: true })
 
-export default function App({ Component, pageProps = { title: 'index' } }) {
+export default function App({ Component, pageProps = { title: 'EngramAR' } }) {
   const ref = useRef()
   return (
     <>
-      <Header title={pageProps.title} />
+      <Header title="Engram AR" />
       <Layout ref={ref}>
         <Component {...pageProps} />
         {/* The canvas can either be in front of the dom or behind. If it is in front it can overlay contents.

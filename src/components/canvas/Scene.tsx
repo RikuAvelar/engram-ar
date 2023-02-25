@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Preload } from '@react-three/drei'
+import { CameraControls, OrbitControls, Preload } from '@react-three/drei'
 import dynamic from 'next/dynamic'
 
 const Effects = dynamic(() => import('@/templates/providers/effectsProvider'), { ssr: false });
@@ -13,7 +13,8 @@ export default function Scene({ children, ...props }) {
       <Effects />
       {children}
       <Preload all />
-      <OrbitControls />
+      {/* <OrbitControls /> */}
+      <CameraControls />
     </Canvas>
   )
 }
