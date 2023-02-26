@@ -21,6 +21,8 @@ interface EngramGLTF {
   nodes: Record<string, { geometry: BufferGeometry }>;
 }
 
+const SCALE = 1.2;
+
 const Engram = forwardRef<Mesh>(function EngramExoticComponent(props, ref) {
   const { nodes, materials } = useGLTF('/models/engram-transformed.glb') as unknown as EngramGLTF;
   const [age, setAge] = useState(0);
@@ -36,7 +38,7 @@ const Engram = forwardRef<Mesh>(function EngramExoticComponent(props, ref) {
     }
   });
 
-  const mainScale = 0.01 + easeOutQuint(age / 200) * 1.51;
+  const mainScale = 0.01 + easeOutQuint(age / 200) * SCALE;
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.Casing.geometry} scale={mainScale} ref={ref}>
@@ -84,7 +86,7 @@ const Engram = forwardRef<Mesh>(function EngramExoticComponent(props, ref) {
 });
 
 // Returns legacy geometry vertices, faces for ConvP
-function toConvexProps(bufferGeometry: BufferGeometry, scale = 1): ConvexPolyhedronProps['args'] {
+function toConvexProps(bufferGeometry: BufferGeometry, scale = SCALE): ConvexPolyhedronProps['args'] {
   const geo = new Geometry().fromBufferGeometry(bufferGeometry)
   // Merge duplicate vertices resulting from glTF export.
   // Cannon assumes contiguous, closed meshes to work
@@ -96,7 +98,7 @@ export default function EngramCannonWrapper({ position }: { position?: Triplet }
   const { nodes } = useGLTF('/models/engram-transformed.glb') as unknown as EngramGLTF;
   const origin = useMemo(() => new Vector3(), []);
 
-  const args = toConvexProps(nodes.Casing.geometry, 1.52);
+  const args = toConvexProps(nodes.Casing.geometry, SCALE);
 
   const [ref, api] = useConvexPolyhedron(() => ({
     args,
@@ -110,7 +112,7 @@ export default function EngramCannonWrapper({ position }: { position?: Triplet }
     });
 
     setTimeout(() => {
-      api.applyImpulse([0, 1_000, 100], [0, 0, 0]);
+      api.applyImpulse([0, 1_000, 0], [0, 0, 0]);
       api.applyTorque([30000 * Math.random(), 30000 * Math.random(), 30000 * Math.random()])
     }, 30)
   }, [api, origin])

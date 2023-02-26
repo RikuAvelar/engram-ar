@@ -6,7 +6,7 @@ export default function Effects() {
     return (
         <EffectComposer>
             {/* <Bloom width={500} /> */}
-            <Bloom intensity={1.15} radius={0.8} luminanceThreshold={0.1} luminanceSmoothing={.7} kernelSize={KernelSize.LARGE} />
+            <Bloom intensity={1.15} radius={0.8} luminanceThreshold={0.3} luminanceSmoothing={.7} kernelSize={KernelSize.LARGE} />
             {/* <SSR /> */}
         </EffectComposer>
     )
