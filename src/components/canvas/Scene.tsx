@@ -1,9 +1,10 @@
-import { Canvas } from '@react-three/fiber'
-import { CameraControls, OrbitControls, Preload } from '@react-three/drei'
-import dynamic from 'next/dynamic'
 import { Physics, usePlane } from '@react-three/cannon';
-import { XR, ARButton } from '@react-three/xr';
-// import { Debug, Physics, RigidBody } from '@react-three/rapier';
+import { Preload } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { XR } from '@react-three/xr';
+import dynamic from 'next/dynamic';
+import { useRef } from 'react';
+import { Mesh } from 'three';
 
 const Effects = dynamic(() => import('@/templates/providers/effectsProvider'), { ssr: false });
 
@@ -12,9 +13,9 @@ const Floor = () => {
     rotation: [-Math.PI / 2, 0, 0],
     position: [0, -1, 0],
     type: 'Static',
-  }))
+  }), useRef<Mesh>())
 
-  return <mesh ref={floor as any}>
+  return <mesh ref={floor}>
     <planeGeometry args={[100, 100]} />
     <meshStandardMaterial transparent opacity={0} />
   </mesh>;
@@ -34,10 +35,6 @@ export default function Scene({ children, ...props }) {
             {children}
 
             <Floor />
-            {/* <mesh receiveShadow>
-              <boxGeometry args={[100, 100, 0.5]} />
-              <meshStandardMaterial color="gray" transparent opacity={0} />
-            </mesh> */}
           </Physics>
           <Preload all />
         </XR>

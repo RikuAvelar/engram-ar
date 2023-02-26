@@ -1,9 +1,8 @@
-import * as THREE from 'three'
-import React, { useEffect, useMemo, useRef } from 'react'
-import { MeshTransmissionMaterial, Points, useGLTF } from '@react-three/drei'
-import { exotic } from '@/templates/constants'
+import { exotic } from '@/templates/constants';
 import { useFrame } from '@react-three/fiber';
-import { AdditiveBlending, BufferAttribute, BufferGeometry, DynamicDrawUsage, LineBasicMaterial, LineSegments, Vector3 } from 'three';
+import { useEffect, useMemo, useRef } from 'react';
+import * as THREE from 'three';
+import { AdditiveBlending, BufferAttribute, BufferGeometry, DynamicDrawUsage, LineBasicMaterial, Vector3 } from 'three';
 
 const PARTICLE_COUNT = 150;
 const MAX_CONNECTIONS = 3;
@@ -67,7 +66,6 @@ const createSytem = (origin?: Vector3) => {
     particles.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3).setUsage(THREE.DynamicDrawUsage));
     particles.setAttribute('color', new THREE.BufferAttribute(particleColors, 4).setUsage(THREE.DynamicDrawUsage));
 
-    // const cloud = new THREE.Points(particles, PointMaterial);
     const lines = new BufferGeometry();
 
     lines.setAttribute('position', new BufferAttribute(linePositions, 3).setUsage(DynamicDrawUsage));
@@ -76,19 +74,15 @@ const createSytem = (origin?: Vector3) => {
     lines.computeBoundingSphere();
     lines.setDrawRange(0, 0);
 
-    // const linesMesh = new LineSegments(lines, LineMaterial);
-
     return {
         lines,
         linePositions,
         lineColors,
-        // linesMesh,
 
         particles,
         particlePositions,
         particleData,
         particleColors,
-        // cloud,
 
         count: PARTICLE_COUNT,
     };
@@ -103,7 +97,6 @@ const Particles = ({ origin: originVec }: { origin?: Vector3 }) => {
 
     useEffect(() => {
         originRef.current = originVec;
-        console.log(originVec);
     }, [originVec]);
 
     const PointMaterial = useMemo(() => new THREE.PointsMaterial({
@@ -112,8 +105,7 @@ const Particles = ({ origin: originVec }: { origin?: Vector3 }) => {
         size: P_SIZE,
         blending: THREE.AdditiveBlending,
         transparent: true,
-        // sizeAttenuation: false,
-    }), [P_SIZE]);
+    }), []);
 
     const LineMaterial = useMemo(() => new LineBasicMaterial({
         color: exotic,
@@ -121,7 +113,7 @@ const Particles = ({ origin: originVec }: { origin?: Vector3 }) => {
         blending: AdditiveBlending,
         transparent: true,
         linewidth: L_SIZE
-    }), [L_SIZE]);
+    }), []);
 
     useFrame(() => {
         const { particlePositions, particleColors, linePositions, lineColors, lines, particles, particleData } = system;
@@ -185,14 +177,10 @@ const Particles = ({ origin: originVec }: { origin?: Vector3 }) => {
 
             const decay = Math.max(0, data.age - data.lifetime) / DECAY_TIME;
             const strength = Math.max(0, 1 - easeInOutCubic(decay));
-            // system.particles.
-            // const color = exotic.clone().multiplyScalar(strength);
             particleColors[partColorPointer++] = strength;
             particleColors[partColorPointer++] = strength;
             particleColors[partColorPointer++] = strength;
             particleColors[partColorPointer++] = strength;
-
-            // console.log(strength);
 
             if (particleData[i].numConnections >= MAX_CONNECTIONS) {
                 continue;
@@ -264,7 +252,6 @@ const Particles = ({ origin: originVec }: { origin?: Vector3 }) => {
     return (
         <>
             <lineSegments geometry={system.lines} material={LineMaterial} />
-            {/* <Points geometry={system.particles} material={PointMaterial} /> */}
             <points geometry={system.particles} material={PointMaterial} />
         </>
     );

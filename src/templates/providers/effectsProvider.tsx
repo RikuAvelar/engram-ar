@@ -1,11 +1,5 @@
-import * as THREE from 'three';
-import { useThree, extend, useFrame } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import useBufferSize from '../hooks/useBufferSize';
-import { Bloom, EffectComposer, SMAA, SSR, Vignette } from '@react-three/postprocessing';
+import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import { KernelSize } from 'postprocessing';
-
-// extend({ EffectComposer, RenderPass, EffectPass });
 
 export default function Effects() {
     // return <></>;
