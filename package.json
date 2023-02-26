@@ -10,9 +10,14 @@
     "node": ">=14"
   },
   "dependencies": {
+    "@artcom/react-three-arjs": "^0.5.2",
+    "@react-three/cannon": "^6.5.2",
     "@react-three/drei": "^9.56.27",
     "@react-three/fiber": "^8.10.1",
     "@react-three/postprocessing": "^2.7.0",
+    "@react-three/rapier": "^0.13.2",
+    "@react-three/xr": "^5.2.0",
+    "core-js": "^3.28.0",
     "glsl-random": "^0.0.5",
     "next": "^13.1.6",
     "next-pwa": "^5.6.0",

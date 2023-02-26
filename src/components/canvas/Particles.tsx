@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { MeshTransmissionMaterial, Points, useGLTF } from '@react-three/drei'
 import { exotic } from '@/templates/constants'
 import { useFrame } from '@react-three/fiber';
-import { AdditiveBlending, BufferAttribute, BufferGeometry, DynamicDrawUsage, LineBasicMaterial, LineSegments } from 'three';
+import { AdditiveBlending, BufferAttribute, BufferGeometry, DynamicDrawUsage, LineBasicMaterial, LineSegments, Vector3 } from 'three';
 
 const PARTICLE_COUNT = 150;
 const MAX_CONNECTIONS = 3;
@@ -38,7 +38,7 @@ function easeInOutCubic(x: number): number {
 
 const initialVelocity = (val = INITIAL_VELOCITY) => -val + Math.random() * 2 * val;
 
-const createSytem = () => {
+const createSytem = (origin?: Vector3) => {
     const segmentCount = PARTICLE_COUNT ** 2;
     const linePositions = new Float32Array(segmentCount * 3);
     const lineColors = new Float32Array(segmentCount * 4);
@@ -52,14 +52,15 @@ const createSytem = () => {
         age: Math.floor(Math.random() * STARTING_AGE_RANGE),
         lifetime: LIFETIME + Math.floor((2 * Math.random() * LIFE_VARIANCE) - LIFE_VARIANCE),
         speedVariance: (Math.random() + 0.5) / 2,
+        isFirstGen: true,
     }));
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
         const [x, y, z] = Array(3).fill(undefined).map(() => Math.random() * STARTING_RADIUS - STARTING_RADIUS / 2);
 
-        particlePositions[i * 3] = x;
-        particlePositions[i * 3 + 1] = y;
-        particlePositions[i * 3 + 2] = z;
+        particlePositions[i * 3] = origin?.x ?? 0 + x;
+        particlePositions[i * 3 + 1] = origin?.y ?? 0 + y;
+        particlePositions[i * 3 + 2] = origin?.z ?? 0 + z;
     }
 
     particles.setDrawRange(0, PARTICLE_COUNT);
@@ -96,8 +97,14 @@ const createSytem = () => {
 const P_SIZE = 0.025;
 const L_SIZE = 1;
 
-const Particles = () => {
+const Particles = ({ origin: originVec }: { origin?: Vector3 }) => {
     const system = useMemo(createSytem, []);
+    const originRef = useRef(originVec);
+
+    useEffect(() => {
+        originRef.current = originVec;
+        console.log(originVec);
+    }, [originVec]);
 
     const PointMaterial = useMemo(() => new THREE.PointsMaterial({
         color: exotic,
@@ -136,13 +143,14 @@ const Particles = () => {
                 data.velocity.set(initialVelocity(MAX_SPREAD), initialVelocity(MAX_FLOAT), initialVelocity(MAX_SPREAD));
                 data.lifetime = LIFETIME + Math.floor((2 * Math.random() * LIFE_VARIANCE) - LIFE_VARIANCE);
                 data.speedVariance = (Math.random() + 0.5) / 2;
+                data.isFirstGen = false;
 
                 const [pX, pY, pZ] = Array(3).fill(i).map((i, j) => 3 * i + j);
                 const [x, y, z] = Array(3).fill(undefined).map(() => Math.random() * STARTING_RADIUS - STARTING_RADIUS / 2);
 
-                particlePositions[pX] = x;
-                particlePositions[pY] = y;
-                particlePositions[pZ] = z;
+                particlePositions[pX] = (originRef.current?.x ?? 0) + x;
+                particlePositions[pY] = (originRef.current?.y ?? 0) + y;
+                particlePositions[pZ] = (originRef.current?.z ?? 0) + z;
             }
 
         }
@@ -150,6 +158,13 @@ const Particles = () => {
         // Handle particle position and line connections
         for (let i = 0; i < PARTICLE_COUNT; i++) {
             const data = particleData[i];
+            if (data.isFirstGen) {
+                particleColors[partColorPointer++] = 0;
+                particleColors[partColorPointer++] = 0;
+                particleColors[partColorPointer++] = 0;
+                particleColors[partColorPointer++] = 0;
+                continue;
+            }
             const [pX, pY, pZ] = [
                 i * 3,
                 i * 3 + 1,

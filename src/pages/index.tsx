@@ -15,8 +15,8 @@ export default function Page(props) {
 
 // Canvas components go here
 // It will receive same props as the Page component (from getStaticProps, etc.)
-Page.canvas = (props) => <Engram />
+Page.canvas = (props: Record<string, unknown>) => <Engram {...props} />
 
 export async function getStaticProps() {
-  return { props: { title: 'Index' } }
+  return { props: { title: 'Engram AR', position: [0, 3, 0] } }
 }
