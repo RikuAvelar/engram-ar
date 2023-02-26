@@ -1,4 +1,3 @@
-import { ARButton } from '@react-three/xr'
 import { useRef, forwardRef, useImperativeHandle, PropsWithChildren } from 'react'
 
 const Layout = forwardRef<unknown, PropsWithChildren<{}>>(({ children, ...props }, ref) => {
@@ -11,11 +10,9 @@ const Layout = forwardRef<unknown, PropsWithChildren<{}>>(({ children, ...props 
       <div
         {...props}
         ref={localRef}
-        className='absolute top-0 left-0 z-10 w-screen h-screen overflow-hidden dom bg-zinc-900 text-gray-50'>
+        className='absolute top-0 left-0 z-10 w-screen h-screen overflow-hidden dom'>
         {children}
       </div>
-
-      <ARButton />
     </>
   )
 })

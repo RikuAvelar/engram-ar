@@ -4,7 +4,7 @@ import Header from '@/config'
 import Layout from '@/components/dom/Layout'
 import '@/styles/index.css'
 
-const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: true })
+const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
 export default function App({ Component, pageProps = { title: 'EngramAR' } }) {
   const ref = useRef()

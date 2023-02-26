@@ -1,12 +1,14 @@
 import { Physics, usePlane } from '@react-three/cannon';
 import { Preload } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { XR } from '@react-three/xr';
 import dynamic from 'next/dynamic';
 import { useRef } from 'react';
 import { Mesh } from 'three';
 
+import { ARCanvas, ARMarker } from '@artcom/react-three-arjs';
+
 const Effects = dynamic(() => import('@/templates/providers/effectsProvider'), { ssr: false });
+// const ARCanvas = dynamic(async () => (await import('@artcom/react-three-arjs')).ARCanvas, { ssr: false })
 
 const Floor = () => {
   const [floor] = usePlane(() => ({
@@ -24,23 +26,25 @@ const Floor = () => {
 export default function Scene({ children, ...props }) {
   // Everything defined in here will persist between route changes, only children are swapped
 
+  const CanvasComponent = typeof window === 'undefined' ? Canvas : ARCanvas;
+
   return (
     <>
-      <Canvas {...props}>
-        <XR referenceSpace="local-floor">
-          <directionalLight intensity={0.75} />
-          <ambientLight intensity={0.75} />
-          <Effects />
-          <Physics gravity={[0, -10, 0]}>
+      <CanvasComponent camera={{ position: [0, 0, 0] }} dpr={window.devicePixelRatio}>
+        <directionalLight intensity={0.75} />
+        <ambientLight intensity={0.75} />
+        <Effects />
+        <Physics gravity={[0, -10, 0]}>
+          <ARMarker type="pattern" patternUrl="markers/hiro.patt">
             {children}
 
             <Floor />
-          </Physics>
-          <Preload all />
-        </XR>
+          </ARMarker>
+        </Physics>
+        <Preload all />
         {/* <OrbitControls /> */}
         {/* <CameraControls /> */}
-      </Canvas>
+      </CanvasComponent>
     </>
   )
 }
